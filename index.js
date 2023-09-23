@@ -15,7 +15,7 @@ dotenv.config();
 
 // ------------------------------------------------------- //
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB_URL, {
+mongoose.connect("mongodb+srv://user:user@cluster0.m0zeifh.mongodb.net/?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -32,18 +32,19 @@ function formatDate(date) {
 }
 const currentDate = new Date();
 const formattedDate = formatDate(currentDate);
-console.log(formattedDate);
 
 // ------------------------------------------------------- //
 // Route to get drop information
 app.get("/get-drop-info", async (req, res) => {
   try {
-    console.log(formattedDate);
+    console.log("GET Request");
     // Retrieve all drop records for a specific date
     const dropInfo = await Drop.find({ date: formattedDate });
+    console.log("1st");
 
     // Send the drop information as a JSON response
     res.json(dropInfo);
+    console.log("2nd");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -54,6 +55,7 @@ app.get("/get-drop-info", async (req, res) => {
 // Route to update drop information
 app.post("/update-drop", async (req, res) => {
   try {
+    console.log("POST Request");
     const { name, count } = req.body;
     console.log("Received update request:", name, count);
 
