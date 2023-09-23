@@ -40,6 +40,8 @@ app.get("/get-drop-info", async (req, res) => {
   try {
     // Retrieve all drop records for a specific date
     const dropInfo = await Drop.find({ date: formattedDate });
+    console.log("Found drop info:");
+    console.log(dropInfo);
 
     // Send the drop information as a JSON response
     res.json(dropInfo);
