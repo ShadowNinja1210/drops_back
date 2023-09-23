@@ -38,6 +38,7 @@ console.log(formattedDate);
 // Route to get drop information
 app.get("/get-drop-info", async (req, res) => {
   try {
+    console.log(formattedDate);
     // Retrieve all drop records for a specific date
     const dropInfo = await Drop.find({ date: formattedDate });
     console.log("Found drop info:");
