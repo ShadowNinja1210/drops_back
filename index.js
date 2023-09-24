@@ -31,7 +31,7 @@ function formatDate(date) {
   return new Date(date).toLocaleDateString(undefined, options);
 }
 const currentDate = new Date();
-const formattedDate = formatDate(currentDate);
+const serverDate = formatDate(currentDate);
 
 // ------------------------------------------------------- //
 // Testing home page
@@ -43,10 +43,12 @@ app.get("/", (req, res) => {
 // Route to get drop information
 app.get("/get-drop-info", async (req, res) => {
   try {
+    const formattedDate = req.query.formattedDate;
     console.log("GET Request");
     // Retrieve all drop records for a specific date
     const dropInfo = await Drop.find({ date: formattedDate });
     console.log("1st");
+    console.log(formattedDate);
 
     // Send the drop information as a JSON response
     res.json(dropInfo);
@@ -62,7 +64,7 @@ app.get("/get-drop-info", async (req, res) => {
 app.post("/update-drop", async (req, res) => {
   try {
     console.log("POST Request");
-    const { name, count } = req.body;
+    const { name, count, formattedDate } = req.body;
     console.log("Received update request:", name, count);
 
     // Find the drop record with the specified name and date
@@ -89,43 +91,8 @@ app.post("/update-drop", async (req, res) => {
 // ------------------------------------------------------- //
 // Route to create a drop for the current date
 /*app.get("/create-drop", async (req, res) => {
-    try {
-        const existingDrop = await Drop.findOne({ date: formattedDate });
-
-        if (!existingDrop) {
-            // Create a new drop for the current date with a count of 0
-        await Drop.create(
-            {
-                name: "Pred Forte", // Set the drop name accordingly
-                count: 0,
-                date: formattedDate,
-            },
-            {
-                name: "Molflox", // Set the drop name accordingly
-                count: 0,
-                date: formattedDate,
-            },
-            {
-                name: "Homide", // Set the drop name accordingly
-                count: 0,
-                date: formattedDate,
-            }
-            ).then(() => console.log("Created"));
-        } else {
-            console.log("Already exists");
-        }
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});*/
-
-// ------------------------------------------------------- //
-// Schedule a daily reset at 00:00 IST
-schedule.scheduleJob("0 0 * * *", async () => {
   try {
-    // Check if a drop with the same date exists
-    const existingDrop = await Drop.findOne({ date: formattedDate });
+    const existingDrop = await Drop.findOne({ date: serverDate });
 
     if (!existingDrop) {
       // Create a new drop for the current date with a count of 0
@@ -133,19 +100,54 @@ schedule.scheduleJob("0 0 * * *", async () => {
         {
           name: "Pred Forte", // Set the drop name accordingly
           count: 0,
-          date: formattedDate,
+          date: serverDate,
         },
         {
           name: "Milflox", // Set the drop name accordingly
           count: 0,
-          date: formattedDate,
+          date: serverDate,
         },
         {
           name: "Homide", // Set the drop name accordingly
           count: 0,
-          date: formattedDate,
+          date: serverDate,
         }
-      ).then(() => console.log(`Created drop for ${formattedDate}`));
+      ).then(() => console.log("Created"));
+    } else {
+      console.log("Already exists");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});*/
+
+// ------------------------------------------------------- //
+// Schedule a daily reset at 00:00 IST
+schedule.scheduleJob("0 0 * * *", async () => {
+  try {
+    // Check if a drop with the same date exists
+    const existingDrop = await Drop.findOne({ date: serverDate });
+
+    if (!existingDrop) {
+      // Create a new drop for the current date with a count of 0
+      await Drop.create(
+        {
+          name: "Pred Forte", // Set the drop name accordingly
+          count: 0,
+          date: serverDate,
+        },
+        {
+          name: "Milflox", // Set the drop name accordingly
+          count: 0,
+          date: serverDate,
+        },
+        {
+          name: "Homide", // Set the drop name accordingly
+          count: 0,
+          date: serverDate,
+        }
+      ).then(() => console.log(`Created drop for ${serverDate}`));
     } else console.log("Already exists");
   } catch (error) {
     console.error(error);
