@@ -34,6 +34,12 @@ const currentDate = new Date();
 const formattedDate = formatDate(currentDate);
 
 // ------------------------------------------------------- //
+// Testing home page
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
+// ------------------------------------------------------- //
 // Route to get drop information
 app.get("/get-drop-info", async (req, res) => {
   try {
