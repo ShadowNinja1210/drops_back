@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const Drop = require("./models/Drop");
-const schedule = require("node-schedule");
+const Showtime = require("./models/Showtime");
+const cron = require("node-cron");
 const dotenv = require("dotenv");
 
 const app = express();
@@ -15,7 +16,7 @@ dotenv.config();
 
 // ------------------------------------------------------- //
 // Connect to MongoDB
-mongoose.connect("mongodb+srv://user:user@cluster0.m0zeifh.mongodb.net/?retryWrites=true&w=majority", {
+mongoose.connect("mongodb+srv://user:user@cluster0.m0zeifh.mongodb.net/test?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -28,7 +29,7 @@ mongoose.connection.on("connected", () => {
 // Define a function to format the date
 function formatDate(date) {
   const options = { day: "numeric", month: "long", year: "numeric" };
-  return new Date(date).toLocaleDateString(undefined, options);
+  return new Date(date).toLocaleDateString("en-US", options);
 }
 const currentDate = new Date();
 const serverDate = formatDate(currentDate);
@@ -53,6 +54,50 @@ app.get("/get-drop-info", async (req, res) => {
     // Send the drop information as a JSON response
     res.json(dropInfo);
     console.log("2nd");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// ------------------------------------------------------- //
+// Route to get drop information
+app.get("/get-showtime", async (req, res) => {
+  try {
+    console.log("GET showtime Request");
+    // Retrieve all drop records for a specific date
+    const showtime = await Showtime.findOne();
+    console.log("Showtime Found");
+
+    // Send the drop information as a JSON response
+    res.json(showtime);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// ------------------------------------------------------- //
+// Route to create or update the showtime
+app.post("/update-showtime", async (req, res) => {
+  try {
+    const showTime = req.body.showTime;
+    console.log("POST showtime Request", showTime);
+
+    // Check if a Showtime document already exists
+    const existingShowtime = await Showtime.findOne();
+
+    if (existingShowtime) {
+      // If it exists, update the time
+      existingShowtime.time = showTime;
+      await existingShowtime.save();
+    } else {
+      // If it doesn't exist, create a new Showtime document
+      const newShowtime = new Showtime({ time: showTime });
+      await newShowtime.save();
+    }
+
+    res.json({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -90,13 +135,12 @@ app.post("/update-drop", async (req, res) => {
 
 // ------------------------------------------------------- //
 // Route to create a drop for the current date
-/*app.get("/create-drop", async (req, res) => {
+app.get("/create-drop", async (req, res) => {
   try {
     const existingDrop = await Drop.findOne({ date: serverDate });
 
     if (!existingDrop) {
-      // Create a new drop for the current date with a count of 0
-      await Drop.create(
+      dropData = [
         {
           name: "Pred Forte", // Set the drop name accordingly
           count: 0,
@@ -111,8 +155,10 @@ app.post("/update-drop", async (req, res) => {
           name: "Homide", // Set the drop name accordingly
           count: 0,
           date: serverDate,
-        }
-      ).then(() => console.log("Created"));
+        },
+      ];
+      // Create a new drop for the current date with a count of 0
+      await Drop.insertMany(dropData).then(() => console.log("Created"));
     } else {
       console.log("Already exists");
     }
@@ -120,11 +166,11 @@ app.post("/update-drop", async (req, res) => {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
-});*/
+});
 
 // ------------------------------------------------------- //
 // Schedule a daily reset at 00:00 IST
-schedule.scheduleJob("0 0 * * *", async () => {
+cron.schedule("2,3,4 0 * * *", async () => {
   try {
     // Check if a drop with the same date exists
     const existingDrop = await Drop.findOne({ date: serverDate });
@@ -153,16 +199,6 @@ schedule.scheduleJob("0 0 * * *", async () => {
     console.error(error);
   }
 });
-
-// ------------------------------------------------------- //
-/*// Schedule weekly advancement
-schedule.scheduleJob("0 0 * * 0", async () => {
-  try {
-    // Advance the week for your logic
-  } catch (error) {
-    console.error(error);
-  }
-});*/
 
 // ------------------------------------------------------- //
 // Start the server
