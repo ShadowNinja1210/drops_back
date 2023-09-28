@@ -158,9 +158,13 @@ app.get("/create-drop", async (req, res) => {
         },
       ];
       // Create a new drop for the current date with a count of 0
-      await Drop.insertMany(dropData).then(() => console.log("Created"));
+      await Drop.insertMany(dropData).then(() => {
+        console.log("Created");
+        res.send("Created");
+      });
     } else {
       console.log("Already exists");
+      res.send("Already exists");
     }
   } catch (error) {
     console.log(error);
