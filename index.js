@@ -174,7 +174,7 @@ app.get("/create-drop", async (req, res) => {
 
 // ------------------------------------------------------- //
 // Schedule a daily reset at 00:00 IST
-cron.schedule("2,3,4 0 * * *", async () => {
+cron.schedule("2,3,4 6 * * *", async () => {
   try {
     // Check if a drop with the same date exists
     const existingDrop = await Drop.findOne({ date: serverDate });
