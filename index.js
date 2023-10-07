@@ -147,12 +147,12 @@ app.get("/create-drop", async (req, res) => {
           date: serverDate,
         },
         {
-          name: "Milflox", // Set the drop name accordingly
+          name: "Vigamox", // Set the drop name accordingly
           count: 0,
           date: serverDate,
         },
         {
-          name: "Homide", // Set the drop name accordingly
+          name: "Optive", // Set the drop name accordingly
           count: 0,
           date: serverDate,
         },
