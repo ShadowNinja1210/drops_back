@@ -137,24 +137,25 @@ app.post("/update-drop", async (req, res) => {
 // Route to create a drop for the current date
 app.get("/create-drop", async (req, res) => {
   try {
-    const existingDrop = await Drop.findOne({ date: serverDate });
+    const formattedDate = req.query.formattedDate;
+    const existingDrop = await Drop.findOne({ date: formattedDate });
 
     if (!existingDrop) {
       dropData = [
         {
           name: "Pred Forte", // Set the drop name accordingly
           count: 0,
-          date: serverDate,
+          date: formattedDate,
         },
         {
           name: "Vigamox", // Set the drop name accordingly
           count: 0,
-          date: serverDate,
+          date: formattedDate,
         },
         {
           name: "Optive", // Set the drop name accordingly
           count: 0,
-          date: serverDate,
+          date: formattedDate,
         },
       ];
       // Create a new drop for the current date with a count of 0
