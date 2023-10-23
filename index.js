@@ -148,6 +148,11 @@ app.get("/create-drop", async (req, res) => {
           date: formattedDate,
         },
         {
+          name: "Iotim",
+          count: 0,
+          date: serverDate,
+        },
+        {
           name: "Vigamox", // Set the drop name accordingly
           count: 0,
           date: formattedDate,
@@ -184,17 +189,22 @@ cron.schedule("2,3,4 6 * * *", async () => {
       // Create a new drop for the current date with a count of 0
       await Drop.create(
         {
-          name: "Pred Forte", // Set the drop name accordingly
+          name: "Pred Forte",
           count: 0,
           date: serverDate,
         },
         {
-          name: "Milflox", // Set the drop name accordingly
+          name: "Iotim",
           count: 0,
           date: serverDate,
         },
         {
-          name: "Homide", // Set the drop name accordingly
+          name: "Milflox",
+          count: 0,
+          date: serverDate,
+        },
+        {
+          name: "Homide",
           count: 0,
           date: serverDate,
         }
