@@ -150,7 +150,7 @@ app.get("/create-drop", async (req, res) => {
         {
           name: "Iotim",
           count: 0,
-          date: serverDate,
+          date: formattedDate,
         },
         {
           name: "Vigamox", // Set the drop name accordingly
@@ -167,6 +167,7 @@ app.get("/create-drop", async (req, res) => {
       await Drop.insertMany(dropData).then(() => {
         console.log("Created");
         res.send("Created");
+        res.json({ success: true });
       });
     } else {
       console.log("Already exists");
