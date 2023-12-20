@@ -143,12 +143,17 @@ app.get("/create-drop", async (req, res) => {
     if (!existingDrop) {
       dropData = [
         {
-          name: "Nepastar",
+          name: "Vigamox",
           count: 0,
           date: serverDate,
         },
         {
-          name: "Iotim",
+          name: "Homide",
+          count: 0,
+          date: serverDate,
+        },
+        {
+          name: "Pred Forte",
           count: 0,
           date: serverDate,
         },
