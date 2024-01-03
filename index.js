@@ -143,17 +143,22 @@ app.get("/create-drop", async (req, res) => {
     if (!existingDrop) {
       dropData = [
         {
+          name: "Pred Forte",
+          count: 0,
+          date: serverDate,
+        },
+        {
           name: "Vigamox",
           count: 0,
           date: serverDate,
         },
         {
-          name: "Homide",
+          name: "Dorzox",
           count: 0,
           date: serverDate,
         },
         {
-          name: "Pred Forte",
+          name: "Raiki",
           count: 0,
           date: serverDate,
         },
@@ -161,8 +166,8 @@ app.get("/create-drop", async (req, res) => {
       // Create a new drop for the current date with a count of 0
       await Drop.insertMany(dropData).then(() => {
         console.log("Created");
-        res.send("Created");
         res.json({ success: true });
+        res.send("Created");
       });
     } else {
       console.log("Already exists");
